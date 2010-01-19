@@ -13,6 +13,9 @@ Example usage adding an action running make: >
   endfun
   call bg#Run(["ctags","-R","."], funcref#Function('MyFunction'))
 < 
+  There is also a shortcut to load the result into quickfix: >
+  call bg#RunQF(cmd,'c',errorFormat)
+<
 
 TODO: add python implementation for Windows users again? See section after
 finish

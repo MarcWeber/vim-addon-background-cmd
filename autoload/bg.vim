@@ -11,7 +11,7 @@ fun! bg#CallEvent(event)
 endf
 
 fun! bg#ShEscape(...)
-  return map(copy(a:000), 'escape(v:val,'.string("\"' ();").')')
+  return map(copy(a:000), 'escape(v:val,'.string("\"\\' ();{}").')')
 endf
 
 fun! bg#ListToCmd(cmd)
@@ -39,7 +39,7 @@ fun! bg#Run(cmd, outToTmpFile, onFinish)
   " thread safe way
   if has('clientserver')
     " force usage of /bin/sh
-    let cmd .= '; '.s:vim.' --servername '.S(v:servername)[0].' --remote-send \<esc\>:call\ funcref#Call\('.S(string(a:onFinish))[0].',\[$?'.escapedFile.'\]\)\<cr\>' 
+    let cmd .= '; '.s:vim.' --servername '.S(v:servername)[0].' --remote-send \<esc\>:debug\ call\ funcref#Call\('.S(string(a:onFinish))[0].',\[$?'.escapedFile.'\]\)\<cr\>' 
     echom cmd
     call system('/bin/sh',cmd.'&')
   else
@@ -50,7 +50,18 @@ fun! bg#Run(cmd, outToTmpFile, onFinish)
   endif
 endf
 
-call bg#Run(["echo","a b"], 1, funcref#Function('exec "cfile ".ARGS[1]'))
+" file either c for quickfix or l for location list
+fun! bg#RunQF(cmd, file, ...)
+  let efm = a:0 > 0 ? a:1 : 0
+  call bg#Run(a:cmd, 1, library#Function('bg#LoadIntoQF', { 'args' : [efm, a:file]}))
+endf
+
+fun! bg#LoadIntoQF(efm, f, status, file)
+  if a:efm != 0
+    exec 'set efm='.a:efm
+  endif
+  exec a:f.'file '.a:file
+endf
 
 finish
 " old code. Can be revived
