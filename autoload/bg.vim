@@ -59,9 +59,9 @@ endf
 
 fun! bg#LoadIntoQF(efm, f, status, file)
   if a:efm != 0
-    exec 'set efm='.a:efm
+    silent! exec 'set efm='.a:efm
   endif
-  exec a:f.'file '.a:file
+  silent! exec a:f.'file '.a:file
 endf
 
 finish
