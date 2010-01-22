@@ -39,7 +39,7 @@ fun! bg#Run(cmd, outToTmpFile, onFinish)
   " thread safe way
   if has('clientserver')
     " force usage of /bin/sh
-    let cmd .= '; '.s:vim.' --servername '.S(v:servername)[0].' --remote-send \<esc\>:debug\ call\ funcref#Call\('.S(string(a:onFinish))[0].',\[$?'.escapedFile.'\]\)\<cr\>' 
+    let cmd .= '; '.s:vim.' --servername '.S(v:servername)[0].' --remote-send \<esc\>:call\ funcref#Call\('.S(string(a:onFinish))[0].',\[$?'.escapedFile.'\]\)\<cr\>' 
     echom cmd
     call system('/bin/sh',cmd.'&')
   else
