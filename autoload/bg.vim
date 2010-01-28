@@ -37,7 +37,7 @@ fun! bg#Run(cmd, outToTmpFile, onFinish)
 
   " call back into vim using client server feature.. This seams to be the only
   " thread safe way
-  if has('clientserver')
+  if has('clientserver') && v:servername != ''
     " force usage of /bin/sh
     let nr = tiny_cmd#Put(a:onFinish)
     let cmd .= '; '.s:vim.' --servername '.S(v:servername)[0].' --remote-send \<esc\>:call\ funcref#Call\(tiny_cmd#Pop\('.nr.'\),\[$?'.escapedFile.'\]\)\<cr\>' 
