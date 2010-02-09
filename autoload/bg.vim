@@ -57,7 +57,7 @@ fun! bg#RunQF(cmd, file, ...)
 endf
 
 fun! bg#LoadIntoQF(efm, f, status, file)
-  if a:efm != 0
+  if type(a:efm) == type("")
     silent! exec 'set efm='.a:efm
   endif
   silent! exec a:f.'file '.a:file
