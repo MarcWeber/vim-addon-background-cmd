@@ -60,7 +60,7 @@ fun! bg#LoadIntoQF(efm, f, status, file)
   if type(a:efm) == type("")
     silent! exec 'set efm='.a:efm
   endif
-  silent! exec a:f.'file '.a:file
+  exec a:f.'file '.a:file
 endf
 
 finish
