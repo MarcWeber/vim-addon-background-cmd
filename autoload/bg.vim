@@ -53,7 +53,7 @@ endf
 " file either c for quickfix or l for location list
 fun! bg#RunQF(cmd, file, ...)
   let efm = a:0 > 0 ? a:1 : 0
-  call bg#Run(a:cmd, 1, library#Function('bg#LoadIntoQF', { 'args' : [efm, a:file]}))
+  call bg#Run(a:cmd, 1, funcref#Function('bg#LoadIntoQF', { 'args' : [efm, a:file]}))
 endf
 
 fun! bg#LoadIntoQF(efm, f, status, file)
