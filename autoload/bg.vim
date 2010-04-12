@@ -41,7 +41,7 @@ fun! bg#Run(cmd, outToTmpFile, onFinish)
     " force usage of /bin/sh
     let nr = tiny_cmd#Put(a:onFinish)
     let cmd .= '; '.s:vim.' --servername '.S(v:servername)[0].' --remote-send \<esc\>:call\ funcref#Call\(tiny_cmd#Pop\('.nr.'\),\[$?'.escapedFile.'\]\)\<cr\>' 
-    call system('/bin/sh',cmd.'&')
+    call system('/bin/sh','{ '.cmd.'; }&')
   else
     " fall back using system
     call system('/bin/sh',cmd)
