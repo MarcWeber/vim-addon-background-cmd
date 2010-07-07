@@ -137,12 +137,3 @@ finish
       popenobj = Popen([self.vim,"--servername","%s"%(self.servername),"--remote-send","<esc>:%(cmd)s<cr>"%locals()])
       popenobj.wait()
   EOF
-
-
-  " Thanks to Luc Hermitte <hermitte@free.fr> for his suggestions
-  " He has written a similar script which can be found here:
-  "     <http://hermitte.free.fr/vim/ressources/lh-BTW.tar.gz> (still in an
-  "     alpha stage.)
-  "     --
-  "      Luc Hermitte
-  "      http://hermitte.free.fr/vim/

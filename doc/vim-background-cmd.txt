@@ -21,6 +21,19 @@ grep example (also consider using gnu idutils): >
    noremap \grep :call bg#RunQF(['grep','-nri',input("word to grep for:"),"."],'c')<cr>
 <
 
-
 TODO: add python implementation for Windows users again? See section after
 finish
+
+related links:
+
+  " Thanks to Luc Hermitte <hermitte@free.fr> for his suggestions
+  " He has written a similar script which can be found here:
+  "     <http://hermitte.free.fr/vim/ressources/lh-BTW.tar.gz> (still in an alpha stage.)
+  "     --
+  "      Luc Hermitte
+  "      http://hermitte.free.fr/vim/
+  "
+
+  "http://vim.wikia.com/wiki/Execute_external_programs_asynchronously_under_Windows
+
+
