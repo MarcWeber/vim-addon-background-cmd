@@ -17,5 +17,10 @@ Example usage adding an action running make: >
   call bg#RunQF(cmd,'c',errorFormat)
 <
 
+grep example (also consider using gnu idutils): >
+   noremap \grep :call bg#RunQF(['grep','-nri',input("word to grep for:"),"."],'c')<cr>
+<
+
+
 TODO: add python implementation for Windows users again? See section after
 finish
