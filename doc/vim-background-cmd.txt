@@ -24,6 +24,9 @@ grep example (also consider using gnu idutils): >
 TODO: add python implementation for Windows users again? See section after
 finish
 
+WINDOWS users: Try the python implementation:
+let let g:bg_use_python=1
+
 related links:
 
   " Thanks to Luc Hermitte <hermitte@free.fr> for his suggestions
