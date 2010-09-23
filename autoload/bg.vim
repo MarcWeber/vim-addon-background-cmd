@@ -11,7 +11,7 @@ fun! bg#CallEvent(event)
 endf
 
 fun! bg#ShEscape(...)
-  return map(copy(a:000), 'escape(v:val,'.string("\"\\' ();{}").')')
+  return map(copy(a:000), 'escape(v:val,'.string("&\"\\' ();{}").')')
 endf
 
 fun! bg#ListToCmd(cmd)
@@ -26,7 +26,7 @@ fun! bg#Run(cmd, outToTmpFile, onFinish)
   call bg#CallEvent("start")
   let S = function('bg#ShEscape')
 
-  let cmd = bg#ListToCmd(a:cmd)
+  let cmd = '{ '.bg#ListToCmd(a:cmd).'; }'
   if a:outToTmpFile
     let tmpFile = tempname()
     let cmd .=  ' &> '.shellescape(tmpFile)
