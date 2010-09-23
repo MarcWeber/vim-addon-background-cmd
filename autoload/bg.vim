@@ -11,7 +11,7 @@ fun! bg#CallEvent(event)
 endf
 
 fun! bg#ShEscape(...)
-  return map(copy(a:000), 'escape(v:val,'.string("&\"\\' ();{}").')')
+  return map(copy(a:000), 'escape(v:val,'.string("`&\"\\' <>();{}").')')
 endf
 
 fun! bg#ListToCmd(cmd)
