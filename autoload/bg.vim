@@ -56,16 +56,22 @@ fun! bg#Run(cmd, outToTmpFile, onFinish)
 endf
 
 " file either c for quickfix or l for location list
+" first opt arg: errorformat string
+" second opt arg: callback after errors have been loaded
 fun! bg#RunQF(cmd, file, ...)
   let efm = a:0 > 0 ? a:1 : 0
-  call bg#Run(a:cmd, 1, funcref#Function('bg#LoadIntoQF', { 'args' : [efm, a:file]}))
+  let onFinish = a:0 > 1 ? a:2 : 0
+  call bg#Run(a:cmd, 1, funcref#Function('bg#LoadIntoQF', { 'args' : [efm, a:file, onFinish]}))
 endf
 
-fun! bg#LoadIntoQF(efm, f, status, file)
+fun! bg#LoadIntoQF(efm, f, onFinish, status, file)
   if type(a:efm) == type("")
     silent! exec 'set efm='.a:efm
   endif
   exec a:f.'file '.a:file
+  if type(a:onFinish) != type(0)
+    call funcref#Call(a:onFinish, [a:status])
+  endif
 endf
 
 if !exists('g:bg_use_python')
