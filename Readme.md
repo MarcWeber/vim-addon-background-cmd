@@ -7,3 +7,6 @@ TODO: use --remote-expr which works much better
 
 Its likely that this plugin will be replaced by vim-addon-async which provides
 interactive realtime updates.
+
+TODO:
+- cause QuickFixCmdPost event?
