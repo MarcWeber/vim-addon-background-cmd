@@ -1,4 +1,4 @@
-exec scriptmanager#DefineAndBind('s:c','g:vim_bg', '{}')
+exec vam#DefineAndBind('s:c','g:vim_bg', '{}')
 
 let s:vim = get(s:c,'vim', 'vim')
 
