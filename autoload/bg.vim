@@ -37,21 +37,21 @@ fun! bg#Run(cmd, outToTmpFile, onFinish)
 
   " call back into vim using client server feature.. This seams to be the only
   " thread safe way
-  if has('clientserver') && v:servername != ''
-    if exists('g:bg_use_python')
-      let nr = tiny_cmd#Put(a:onFinish)
-      call bg#ProcessInPython(a:cmd, tmpFile, nr)
-    else
-      " force usage of /bin/sh
-      let nr = tiny_cmd#Put(a:onFinish)
-      let cmd .= '; '.s:vim.' --servername '.S(v:servername)[0].' --remote-send \<esc\>:call\ funcref#Call\(tiny_cmd#Pop\('.nr.'\),\[$?'.escapedFile.'\]\)\<cr\>' 
-      call system('/bin/sh','{ '.cmd.'; }&')
-    endif
-  else
+  if has('clientserver') && v:servername != '' && exists('g:bg_use_python')
+    let nr = tiny_cmd#Put(a:onFinish)
+    call bg#ProcessInPython(a:cmd, tmpFile, nr)
+  elseif has('clientserver') && v:servername != '' && filereadable('/bin/sh')
+    " force usage of /bin/sh
+    let nr = tiny_cmd#Put(a:onFinish)
+    let cmd .= '; '.s:vim.' --servername '.S(v:servername)[0].' --remote-send \<esc\>:call\ funcref#Call\(tiny_cmd#Pop\('.nr.'\),\[$?'.escapedFile.'\]\)\<cr\>' 
+    call system('/bin/sh','{ '.cmd.'; }&')
+  elseif filereadable('/bin/sh')
     " fall back using system
     call system('/bin/sh',cmd)
     call funcref#Call(a:onFinish, [v:shell_error] + (a:outToTmpFile ? [tmpFile] : []))
     call bg#CallEvent("stop")
+  else
+    throw "missing implementation"
   endif
 endf
 
