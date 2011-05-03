@@ -2,6 +2,9 @@ exec vam#DefineAndBind('s:c','g:vim_bg', '{}')
 
 let s:vim = get(s:c,'vim', 'vim')
 
+" /bin/sh only works if its a bash implementation !
+let s:bash_shell = filereadable('/bin/bash') ? '/bin/bash' : '/bin/sh'
+
 " you can use hooks to change colorscheme or such
 " event one of start / stop
 fun! bg#CallEvent(event)
@@ -44,18 +47,18 @@ fun! bg#Run(cmd, outToTmpFile, onFinish)
   if has('clientserver') && v:servername != '' && exists('g:bg_use_python')
     let nr = tiny_cmd#Put(a:onFinish)
     call bg#ProcessInPython(a:cmd, tmpFile, nr)
-  elseif has('clientserver') && v:servername != '' && filereadable('/bin/sh')
+  elseif has('clientserver') && v:servername != '' && filereadable(s:bash_shell)
     " force usage of /bin/sh
     let nr = tiny_cmd#Put(a:onFinish)
     let cmd .= '; '.s:vim.' --servername '.S(v:servername)[0].' --remote-send \<esc\>:call\ funcref#Call\(tiny_cmd#Pop\('.nr.'\),\[$?'.escapedFile.'\]\)\<cr\>' 
-    call system('/bin/sh','{ '.cmd.'; }&')
-  elseif filereadable('/bin/sh')
+    call system(s:bash_shell,'{ '.cmd.'; }&')
+  elseif filereadable(s:bash_shell))
     " fall back using system
-    call system('/bin/sh',cmd)
+    call system(s:bash_shell',cmd)
     call funcref#Call(a:onFinish, [v:shell_error] + (a:outToTmpFile ? [tmpFile] : []))
     call bg#CallEvent("stop")
   elseif executable('cmd')
-    throw "TODO: finish Windows implementation (quoting!)"
+    throw "TODO: finish Windows implementation (quoting!) - consider using Python implementation which works great on Windows! let g:bg_use_python = 1 !"
     let c = system('cmd',cmd)
     call funcref#Call(a:onFinish, [v:shell_error] + (a:outToTmpFile ? [tmpFile] : []))
     call bg#CallEvent("stop")
