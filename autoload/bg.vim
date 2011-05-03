@@ -13,19 +13,15 @@ fun! bg#CallEvent(event)
   endif
 endf
 
-fun! bg#ShEscape(...)
-  return map(copy(a:000), 'escape(v:val,'.string("`&\"\\' <>();{}").')')
+fun! bg#ShEscape(list)
+  return map(copy(a:list), 'escape(v:val,'.string("`&\"\\' <>();{}").')')
 endf
 
 fun! bg#ListToCmd(cmd)
   if type(a:cmd) == type('')
     return a:cmd
   else
-    let c = []
-    for s in a:cmd
-      call add(c, bg#ShEscape(s))
-    endfor
-    return join(c," ")
+    return join(bg#ShEscape(a:cmd)," ")
   endif
 endfun
 
@@ -37,7 +33,7 @@ fun! bg#Run(cmd, outToTmpFile, onFinish)
   if a:outToTmpFile
     let tmpFile = tempname()
     let cmd .=  ' &> '.shellescape(tmpFile)
-    let escapedFile = ','.S(string(tmpFile))[0]
+    let escapedFile = ','.S([string(tmpFile)])[0]
   else
     let escapedFile = ''
   endif
@@ -50,7 +46,7 @@ fun! bg#Run(cmd, outToTmpFile, onFinish)
   elseif has('clientserver') && v:servername != '' && filereadable(s:bash_shell)
     " force usage of /bin/sh
     let nr = tiny_cmd#Put(a:onFinish)
-    let cmd .= '; '.s:vim.' --servername '.S(v:servername)[0].' --remote-send \<esc\>:call\ funcref#Call\(tiny_cmd#Pop\('.nr.'\),\[$?'.escapedFile.'\]\)\<cr\>' 
+    let cmd .= '; '.s:vim.' --servername '.S([v:servername])[0].' --remote-send \<esc\>:call\ funcref#Call\(tiny_cmd#Pop\('.nr.'\),\[$?'.escapedFile.'\]\)\<cr\>' 
     call system(s:bash_shell,'{ '.cmd.'; }&')
   elseif filereadable(s:bash_shell))
     " fall back using system
