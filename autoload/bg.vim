@@ -48,7 +48,7 @@ fun! bg#Run(cmd, outToTmpFile, onFinish)
     let nr = tiny_cmd#Put(a:onFinish)
     let cmd .= '; '.s:vim.' --servername '.S([v:servername])[0].' --remote-send \<esc\>:call\ funcref#Call\(tiny_cmd#Pop\('.nr.'\),\[$?'.escapedFile.'\]\)\<cr\>' 
     call system(s:bash_shell,'{ '.cmd.'; }&')
-  elseif filereadable(s:bash_shell))
+  elseif filereadable(s:bash_shell)
     " fall back using system
     call system(s:bash_shell',cmd)
     call funcref#Call(a:onFinish, [v:shell_error] + (a:outToTmpFile ? [tmpFile] : []))
