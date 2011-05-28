@@ -50,7 +50,7 @@ fun! bg#Run(cmd, outToTmpFile, onFinish)
     call system(s:bash_shell,'{ '.cmd.'; }&')
   elseif filereadable(s:bash_shell)
     " fall back using system
-    call system(s:bash_shell',cmd)
+    call system(s:bash_shell,cmd)
     call funcref#Call(a:onFinish, [v:shell_error] + (a:outToTmpFile ? [tmpFile] : []))
     call bg#CallEvent("stop")
   elseif executable('cmd')
