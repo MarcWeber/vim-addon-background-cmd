@@ -57,6 +57,9 @@ fun! bg#Run(cmd, outToTmpFile, onFinish)
   let cmd = '{ '.bg#ListToCmd(a:cmd).'; }'
   if a:outToTmpFile
     let tmpFile = tempname()
+    if has('win32') || has('win64')
+      let tmpFile = substitute(tmpFile, '\\', '/', 'g')
+    endif
     let cmd .=  ' &> '.shellescape(tmpFile)
     let escapedFile = ','.S([string(tmpFile)])[0]
   else
@@ -140,6 +143,7 @@ py << EOF
 import threading
 import string
 import sys, tokenize, cStringIO, types, socket, string, vim, os
+import subprocess
 from subprocess import Popen, PIPE, STDOUT
 
 class MyThread ( threading.Thread ):
