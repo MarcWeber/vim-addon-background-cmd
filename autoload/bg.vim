@@ -14,7 +14,7 @@ fun! bg#CallEvent(event)
 endf
 
 fun! bg#ShEscape(list)
-  return map(copy(a:list), 'escape(v:val,'.string("`&\"\\' <>();{}").')')
+  return map(copy(a:list), 'escape(v:val,'.string("#`&\"\\' <>();{}[|]").')')
 endf
 
 fun! bg#ListToCmd(cmd)
@@ -73,6 +73,14 @@ endf
 fun! bg#LoadIntoQF(efm, f, onFinish, status, file)
   if type(a:efm) == type("")
     silent! exec 'set efm='.a:efm
+  endif
+  if a:status != 0 
+    let list = getqflist()
+    if len(list) > 10
+      exec 'cope '.min([30, len(list)])
+    else
+      cope
+    endif
   endif
   exec a:f.'file '.a:file
   if type(a:onFinish) != type(0)
