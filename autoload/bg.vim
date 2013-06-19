@@ -6,8 +6,28 @@ let s:vim = get(s:c,'vim', 'vim')
 let s:bash_shell = filereadable('/bin/bash') ? '/bin/bash' : '/bin/sh'
 
 " you can use hooks to change colorscheme or such
-" event one of start / stop
+" event one of start / stop / all-stopped / first-running
 fun! bg#CallEvent(event)
+  if a:event == "first-running" && has_key(s:c, 'running_colorscheme')
+    let s:c.old_colors = tlib#cmd#OutputAsList("colorscheme")[0]
+    exec 'colorscheme '.s:c.running_colorscheme
+  endif
+  if a:event == "all-stopped" && has_key(s:c, 'running_colorscheme')
+    exec 'colorscheme '.s:c.old_colors
+  endif
+
+  let s:c.running_count = get(s:c, 'running_count', 0)
+  if a:event == "start"
+    let s:c.running_count += 1
+    if s:c.running_count == 1
+      call bg#CallEvent("first-running")
+    endif
+  elseif a:event == "stop"
+    let s:c.running_count -= 1
+    if s:c.running_count == 0
+      call bg#CallEvent("all-stopped")
+    endif
+  endif
   if has_key(s:c, a:event)
     call funcref#Call(s:c[a:event])
   endif
@@ -24,6 +44,11 @@ fun! bg#ListToCmd(cmd)
     return join(bg#ShEscape(a:cmd)," ")
   endif
 endfun
+
+fun! bg#Stop(tmpFile, onFinish, status)
+  call funcref#Call(a:onFinish, [a:status, a:tmpFile])
+  call bg#CallEvent('stop')
+endf
 
 fun! bg#Run(cmd, outToTmpFile, onFinish)
   call bg#CallEvent("start")
@@ -45,8 +70,8 @@ fun! bg#Run(cmd, outToTmpFile, onFinish)
     call bg#ProcessInPython(a:cmd, tmpFile, nr)
   elseif has('clientserver') && v:servername != '' && filereadable(s:bash_shell)
     " force usage of /bin/sh
-    let nr = tiny_cmd#Put(a:onFinish)
-    let cmd .= '; '.s:vim.' --servername '.S([v:servername])[0].' --remote-send \<esc\>:call\ funcref#Call\(tiny_cmd#Pop\('.nr.'\),\[$?'.escapedFile.'\]\)\<cr\>' 
+    let nr = tiny_cmd#Put(funcref#Function("bg#Stop",{'args': [tmpFile, a:onFinish]}))
+    let cmd .= '; '.s:vim.' --servername '.S([v:servername])[0].' --remote-send \<esc\>:call\ funcref#Call\(tiny_cmd#Pop\('.nr.'\),\[$?\]\)\<cr\>' 
     call system(s:bash_shell,'{ '.cmd.'; }&')
   elseif filereadable(s:bash_shell)
     " fall back using system
