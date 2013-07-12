@@ -79,8 +79,12 @@ fun! bg#Run(cmd, outToTmpFile, onFinish)
     call funcref#Call(a:onFinish, [v:shell_error] + (a:outToTmpFile ? [tmpFile] : []))
     call bg#CallEvent("stop")
   elseif executable('cmd')
-    throw "TODO: finish Windows implementation (quoting!) - consider using Python implementation which works great on Windows! let g:bg_use_python = 1 !"
-    let c = system('cmd',cmd)
+    " assume windows, at least make it work for most cases
+    " throw "TODO: finish Windows implementation (quoting!) - consider using Python implementation which works great on Windows! let g:bg_use_python = 1 !"
+    let cmd = bg#ListToCmd(a:cmd).' > '.shellescape(tmpFile).' 2>&1'
+    exec '!'.cmd
+    " let c = system('cmd', cmd)
+    let g:g = cmd
     call funcref#Call(a:onFinish, [v:shell_error] + (a:outToTmpFile ? [tmpFile] : []))
     call bg#CallEvent("stop")
   endif
