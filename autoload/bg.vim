@@ -35,7 +35,7 @@ fun! bg#CallEvent(event)
 endf
 
 fun! bg#ShEscape(list)
-  return map(copy(a:list), 'escape(v:val,'.string("#`&\"\\' <>();{}[|]").')')
+  return map(copy(a:list), 'escape(v:val,'.string("$#`&\"\\' <>();{}[|]").')')
 endf
 
 fun! bg#ListToCmd(cmd)
