@@ -109,8 +109,16 @@ fun! bg#LoadIntoQF(efm, f, onFinish, status, file)
   endif
   if a:status != 0 
     let list = getqflist()
-    if len(list) > 10
-      exec 'cope '.min([30, len(list)])
+    " open quickfix
+    for winnr in range(1, winnr('$'))
+      if getbufvar(winbufnr(winnr), '&buftype') == 'quickfix'
+        let quickfix_winnr = winnr
+      endif
+    endfor
+
+    " if quickfix is open do no longer resize
+    if !exists('quickfix_winnr') && len(list) > 10
+      debug exec 'cope '.min([30, len(list)])
     else
       cope
     endif
