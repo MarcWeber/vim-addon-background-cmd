@@ -163,12 +163,15 @@ class MyThread ( threading.Thread ):
     self.command = cmd
     self.tmpfile = tmpfile
     self.callback_nr = callback_nr
-
-    self.su = subprocess.STARTUPINFO()
-    if subprocess.mswindows:
-      self.su.dwFlags |= subprocess._subprocess.STARTF_USESHOWWINDOW
-      self.su.wShowWindow = subprocess._subprocess.SW_HIDE
-
+    
+    try:
+      self.su = subprocess.STARTUPINFO()
+      if subprocess.mswindows:
+        self.su.dwFlags |= subprocess._subprocess.STARTF_USESHOWWINDOW
+        self.su.wShowWindow = subprocess._subprocess.SW_HIDE
+    except:
+      pass
+    
   def run ( self ):
     try:
       if type(self.command) == type(""):
