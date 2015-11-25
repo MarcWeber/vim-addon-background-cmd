@@ -164,6 +164,7 @@ class MyThread ( threading.Thread ):
     self.tmpfile = tmpfile
     self.callback_nr = callback_nr
     
+    #on some machines STARTUPINFO is not defined
     try:
       self.su = subprocess.STARTUPINFO()
       if subprocess.mswindows:
