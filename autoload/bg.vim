@@ -118,7 +118,7 @@ fun! bg#LoadIntoQF(efm, f, onFinish, status, file)
 
     " if quickfix is open do no longer resize
     if !exists('quickfix_winnr') && len(list) > 10
-      debug exec 'cope '.min([30, len(list)])
+      exec 'cope '.min([30, len(list)])
     else
       cope
     endif
